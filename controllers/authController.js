@@ -101,8 +101,19 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// Logout user (client-side token removal)
+const logout = async (req, res) => {
+  try {
+    res.json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   register,
   login,
-  getCurrentUser
+  getCurrentUser,
+  logout
 };

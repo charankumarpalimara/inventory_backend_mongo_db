@@ -45,6 +45,8 @@ app.use('/api/jewelry', require('./routes/jewelry'));
 app.use('/api/sales', require('./routes/sales'));
 app.use('/api/customers', require('./routes/customers'));
 app.use('/api/alerts', require('./routes/alerts'));
+app.use('/api/rates', require('./routes/rates'));
+app.use('/api/analytics', require('./routes/analytics'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

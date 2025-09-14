@@ -91,6 +91,10 @@ const saleSchema = new mongoose.Schema({
   },
   
   // Additional Information
+  saleDate: {
+    type: Date,
+    default: Date.now
+  },
   notes: {
     type: String,
     trim: true
