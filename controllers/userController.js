@@ -94,15 +94,8 @@ const userController = {
       const { id } = req.params;
       const updates = req.body;
 
-      // Remove password from updates if present
-      delete updates.password;
-
-      const user = await User.findByIdAndUpdate(
-        id,
-        updates,
-        { new: true, runValidators: true }
-      ).select('-password');
-
+      // Find the user first
+      const user = await User.findById(id);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -110,10 +103,29 @@ const userController = {
         });
       }
 
+      // Update user fields
+      Object.keys(updates).forEach(key => {
+        if (key !== 'password' && updates[key] !== undefined) {
+          user[key] = updates[key];
+        }
+      });
+
+      // Handle password update separately if provided
+      if (updates.password && updates.password.trim() !== '') {
+        user.password = updates.password; // This will trigger the pre-save middleware to hash it
+      }
+
+      // Save the user (this will trigger password hashing if password was modified)
+      await user.save();
+
+      // Remove password from response
+      const userResponse = user.toObject();
+      delete userResponse.password;
+
       res.json({
         success: true,
         message: 'User updated successfully',
-        user
+        user: userResponse
       });
     } catch (error) {
       console.error('Update user error:', error);
@@ -183,6 +195,33 @@ const userController = {
       res.status(500).json({
         success: false,
         error: 'Failed to toggle user status'
+      });
+    }
+  },
+
+  // Bulk delete users
+  bulkDeleteUsers: async (req, res) => {
+    try {
+      const { userIds } = req.body;
+      
+      if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+        return res.status(400).json({
+          success: false,
+          error: 'User IDs array is required'
+        });
+      }
+
+      const result = await User.deleteMany({ _id: { $in: userIds } });
+      
+      res.json({
+        success: true,
+        message: `${result.deletedCount} users deleted successfully`
+      });
+    } catch (error) {
+      console.error('Bulk delete users error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to delete users'
       });
     }
   }
