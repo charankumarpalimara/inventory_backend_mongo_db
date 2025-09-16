@@ -13,8 +13,17 @@ if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
 }
 
-// Security middleware
-app.use(helmet());
+// Security middleware with relaxed image policy for development
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "img-src": ["'self'", "data:", "https://shimmering-cannoli-4997e6.netlify.app", "http://localhost:8080"],
+      "connect-src": ["'self'", "https://shimmering-cannoli-4997e6.netlify.app", "http://localhost:8080"]
+    }
+  }
+}));
 
 // Rate limiting - only in production
 if (process.env.NODE_ENV === 'production') {
@@ -52,6 +61,9 @@ app.use(cors({
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static('uploads'));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/jewelry_inventory', {

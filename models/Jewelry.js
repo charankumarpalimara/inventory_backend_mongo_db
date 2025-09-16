@@ -15,7 +15,68 @@ const jewelrySchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['rings', 'necklaces', 'earrings', 'bracelets', 'watches', 'other']
+    enum: ['rings', 'necklaces', 'earrings', 'bracelets', 'watches', 'other', 'jewelry', 'repair', 'order']
+  },
+  subtype: {
+    type: String,
+    trim: true
+  },
+  metalType: {
+    type: String,
+    trim: true
+  },
+  metalWeight: {
+    type: Number,
+    min: 0
+  },
+  stoneType: {
+    type: String,
+    trim: true
+  },
+  stoneWeight: {
+    type: Number,
+    min: 0
+  },
+  stoneCut: {
+    type: String,
+    trim: true
+  },
+  stoneClarity: {
+    type: String,
+    trim: true
+  },
+  stoneColor: {
+    type: String,
+    trim: true
+  },
+  stoneCount: {
+    type: Number,
+    min: 0
+  },
+  stoneCost: {
+    type: Number,
+    min: 0
+  },
+  makingCharges: {
+    type: Number,
+    min: 0
+  },
+  wastage: {
+    type: Number,
+    min: 0
+  },
+  laborCost: {
+    type: Number,
+    min: 0
+  },
+  otherCosts: {
+    type: Number,
+    min: 0
+  },
+  status: {
+    type: String,
+    enum: ['active', 'inactive', 'sold'],
+    default: 'active'
   },
   description: {
     type: String,
@@ -39,10 +100,6 @@ const jewelrySchema = new mongoose.Schema({
     type: Number,
     min: 0
   },
-  material: {
-    type: String,
-    trim: true
-  },
   gemstone: {
     type: String,
     trim: true
@@ -58,10 +115,6 @@ const jewelrySchema = new mongoose.Schema({
   images: [{
     type: String
   }],
-  imageUrl: {
-    type: String,
-    trim: true
-  },
   isActive: {
     type: Boolean,
     default: true
@@ -69,6 +122,22 @@ const jewelrySchema = new mongoose.Schema({
   lowStockThreshold: {
     type: Number,
     default: 10
+  },
+  minStockLevel: {
+    type: Number,
+    default: 5
+  },
+  markup: {
+    type: Number,
+    default: 0
+  },
+  tags: [{
+    type: String,
+    trim: true
+  }],
+  notes: {
+    type: String,
+    trim: true
   }
 }, {
   timestamps: true
